@@ -32,7 +32,7 @@ export async function InstallGlobalCommands(appId, commands) {
 export async function getFacts(animal) {
   if (animal === 'cat') {
     const myHeaders = new Headers();
-    myHeaders.append("Cookie", process.env.SID);
+    myHeaders.append("Cookie", `connect.sid=${process.env.SID}`);
 
     const requestOptions = {
       method: "GET",
