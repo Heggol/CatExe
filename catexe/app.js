@@ -16,7 +16,7 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.post('/interactions', verifyKeyMiddleware(process.env.PUBLIC_KEY), async function (req, res) {
-  const { id, type, data } = req.body;
+  const { id, type, data, token } = req.body;
 
   if (type === InteractionType.PING) {
     return res.send({ type: InteractionResponseType.PONG });
@@ -26,18 +26,29 @@ app.post('/interactions', verifyKeyMiddleware(process.env.PUBLIC_KEY), async fun
     const { name } = data;
 
     if (name === 'cat' || name === 'dog') {
+      // Respond immediately to acknowledge the command
+      res.send({
+        type: InteractionResponseType.DEFERRED_CHANNEL_MESSAGE_WITH_SOURCE,
+      });
+
       try {
-        const fact = await getFacts(name); // Wait for the API response
-        return res.send({
-          type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
-          data: {
-            content: fact,
+        const fact = await getFacts(name);
+
+        // Send the actual response with the fact
+        await fetch(`https://discord.com/api/v10/webhooks/${process.env.APP_ID}/${token}/messages/@original`, {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
           },
+          type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+          data: JSON.stringify({
+            content: fact,
+          }),
         });
       } catch (error) {
         console.error('Error fetching fact:', error);
-        return res.status(500).json({ error: 'Failed to fetch fact' });
       }
+      return;
     }
 
     console.error(`Unknown command: ${name}`);
@@ -47,6 +58,7 @@ app.post('/interactions', verifyKeyMiddleware(process.env.PUBLIC_KEY), async fun
   console.error('Unknown interaction type', type);
   return res.status(400).json({ error: 'Unknown interaction type' });
 });
+
 
 
 app.listen(PORT, () => {
