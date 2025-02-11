@@ -1,1 +1,1 @@
-Discord Bot for Cats
+Discord Bot for Facts
