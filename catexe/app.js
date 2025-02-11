@@ -24,21 +24,25 @@ app.post('/interactions', verifyKeyMiddleware(process.env.PUBLIC_KEY), async fun
     const { name } = data;
 
     if (name === 'cat') {
-      return res.send({
-        type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
-        data: {
-          content: `${getFacts('cat')}`,
-        },
-      });
+      getFacts('cat').then(fact => {
+        return res.send({
+          type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+          data: {
+            content: fact,
+          },
+        });
+      })
     };
 
     if (name === 'dog') {
-      return res.send({
-        type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
-        data: {
-          content: `${getFacts('dog')}`,
-        },
-      });
+      getFacts('dog').then(fact => {
+        return res.send({
+          type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+          data: {
+            content: fact,
+          },
+        });
+      })
     };
     console.error(`unknown command: ${name}`);
     return res.status(400).json({ error: 'unknown command' });

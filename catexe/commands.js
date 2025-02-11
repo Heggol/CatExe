@@ -1,6 +1,6 @@
 import 'dotenv/config';
 
-import { capitalize, InstallGlobalCommands } from './utils.js';
+import { InstallGlobalCommands } from './utils.js';
 
 const CAT_COMMAND = {
   name: 'cat',
