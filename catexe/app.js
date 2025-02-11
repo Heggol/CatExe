@@ -8,7 +8,7 @@ import {
   MessageComponentTypes,
   verifyKeyMiddleware,
 } from 'discord-interactions';
-import { DiscordRequest } from './utils.js';
+import { DiscordRequest, getFacts } from './utils.js';
 
 
 
@@ -27,11 +27,19 @@ app.post('/interactions', verifyKeyMiddleware(process.env.PUBLIC_KEY), async fun
       return res.send({
         type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
         data: {
-          content: 'Cat 🐱',
+          content: `${getFacts('cat')}`,
         },
       });
-    }
+    };
 
+    if (name === 'dog') {
+      return res.send({
+        type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+        data: {
+          content: `${getFacts('dog')}`,
+        },
+      });
+    };
     console.error(`unknown command: ${name}`);
     return res.status(400).json({ error: 'unknown command' });
   }

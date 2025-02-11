@@ -29,6 +29,41 @@ export async function InstallGlobalCommands(appId, commands) {
   }
 }
 
-export function capitalize(str) {
-  return str.charAt(0).toUpperCase() + str.slice(1);
+export async function getFacts(animal) {
+  if (animal === 'cat') {
+    const myHeaders = new Headers();
+    myHeaders.append("Cookie", process.env.SID);
+
+    const requestOptions = {
+      method: "GET",
+      headers: myHeaders,
+      redirect: "follow"
+    };
+
+    try {
+      const response = await fetch("https://cat-fact.herokuapp.com/facts/random?animal_type=cat&amount=1", requestOptions);
+      const result = await response.json();
+      console.log(result);
+      return result.text;
+    } catch (error) {
+      console.error(error);
+    };
+  } else if (animal === 'dog') {
+    const requestOptions = {
+      method: "GET",
+      redirect: "follow"
+    };
+    
+    try {
+      const response = await fetch("http://dog-api.kinduff.com/api/facts?number=1", requestOptions);
+      const result = await response.json();
+      console.log(result);
+      return result.facts;
+    } catch (error) {
+      console.error(error);
+    };
+  } else {
+    console.error("Invalid animal!")
+    return;
+  }
 }

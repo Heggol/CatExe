@@ -2,7 +2,7 @@
   "name": "catexe",
   "private": true,
   "version": "0.1.0",
-  "description": "Discord app with a lot of cats",
+  "description": "Discord app with a lot of facts",
   "main": "app.js",
   "type": "module",
   "engines": {
